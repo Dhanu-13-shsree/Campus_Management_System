@@ -75,8 +75,10 @@ public char grade(Student student) {
     else if(average >=60) {
         return 'D';
     }
-    else {
-        return 'E';
+    else if (average >= 40) {
+            return 'E';
+    }else {
+        return 'F';
 }
 }
 //pass or fail
@@ -95,7 +97,7 @@ public String passOrFail(Student student) {
 }
 public void displayReportCard(Student student){
     System.out.println("Student Name:" + student.getStudentname());
-    System.out.println("Student ID:" + student.getStudentId());
+    System.out.println("Student ID:" + student.getStudentid());
     System.out.println("Department:" + student.getDepartment());
     System.out.println("Total MArks:" + calculateTotal(student));
     System.out.println("Average Marks:" + calculateAverage(student));
