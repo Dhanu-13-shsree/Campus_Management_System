@@ -7,34 +7,49 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import com.campus.services.StudentService;
 
 @WebServlet("/students")
-public class StudentServlet extends HttpServlet{
-    
+public class StudentServlet extends HttpServlet {
+
     private final StudentService studentService = new StudentService();
 
     @Override
-     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("text/html");
-        PrintWriter out = response.getWriter();
+    public void doGet(HttpServletRequest request, HttpServletResponse response) 
+            throws IOException, ServletException {
+        var students = studentService.getStudents();
+        request.setAttribute("students", students);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/student.jsp");
+        dispatcher.forward(request, response);
+        
+    }
 
-        out.println("<html>");
-        out.println("<head><title>List of Students</title></head>");
-        out.println("<body>");
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response) 
+            throws IOException {
 
-        out.println("<h1>All Students</h1>");
-        out.println("<ul>");
-        for (String student : studentService.getStudents()) {
-            out.println("<li>" + student + "</li>");
-        }
-        out.println("</ul>");
-        out.println("<a href=\"/student.html\"> Add Student</a>");
-        out.println("</body>");
-        out.println("</html>");
-
-
-     }
+        String name = request.getParameter("name");
+        String department = request.getParameter("depart    ment");
+        int age = Integer.parseInt(request.getParameter("age"));
+        studentService.addStudent(name, department, age);
+        response.sendRedirect("/students");
+    }
+    @Override
+    public void doPut(HttpServletRequest request, HttpServletResponse response) 
+            throws IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        String name = request.getParameter("name");
+        String department = request.getParameter("department");
+        int age = Integer.parseInt(request.getParameter("age"));
+        studentService.updateStudent(id, name, department, age);
+        response.sendRedirect("/students");
+    }
+    @Override
+    public void doDelete(HttpServletRequest request, HttpServletResponse response) 
+            throws IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        studentService.deleteStudent(id);
+        response.sendRedirect("/students");
+    }
 }
